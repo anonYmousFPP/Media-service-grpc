@@ -6,8 +6,8 @@ import { ConfigModule } from '@nestjs/config';
 @Module({
   imports: [PostModule,
     ConfigModule.forRoot({
-      envFilePath: '.env', // Path to your .env file
-      isGlobal: true,      // Make config available globally
+      envFilePath: '.env',
+      isGlobal: true,
     }),
   ],
   controllers: [AppController],

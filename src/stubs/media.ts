@@ -11,7 +11,13 @@ import { Observable } from "rxjs";
 
 export const protobufPackage = "media";
 
-/** src/media/media.proto */
+export interface GetMediaRequest {
+  fileKey: string;
+}
+
+export interface GetMediaResponse {
+  fileUrl: string;
+}
 
 export interface GetSignedUploadUrlsRequest {
   files: string[];
@@ -20,7 +26,6 @@ export interface GetSignedUploadUrlsRequest {
 export interface GetSignedUploadUrlsResponse {
   urls: SignedUrl[];
 }
-
 
 export interface SignedUrl {
   fileKey: string;
@@ -47,6 +52,8 @@ export interface MediaServiceClient {
   ): Observable<GetSignedUploadUrlsResponse>;
 
   deleteMedia(request: DeleteMediaRequest, metadata?: Metadata): Observable<DeleteMediaResponse>;
+
+  getMedia(request: GetMediaRequest, metadata?: Metadata): Observable<GetMediaResponse>;
 }
 
 export interface MediaServiceController {
@@ -59,11 +66,16 @@ export interface MediaServiceController {
     request: DeleteMediaRequest,
     metadata?: Metadata,
   ): Promise<DeleteMediaResponse> | Observable<DeleteMediaResponse> | DeleteMediaResponse;
+
+  getMedia(
+    request: GetMediaRequest,
+    metadata?: Metadata,
+  ): Promise<GetMediaResponse> | Observable<GetMediaResponse> | GetMediaResponse;
 }
 
 export function MediaServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["getSignedUploadUrls", "deleteMedia"];
+    const grpcMethods: string[] = ["getSignedUploadUrls", "deleteMedia", "getMedia"];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("MediaService", method)(constructor.prototype[method], method, descriptor);

@@ -24,7 +24,8 @@ export class S3Service {
       },
     });
 
-    this.logger.log('S3Service initialized successfully');
+    this.logger.log(`S3Service initialized successfully with bucket: ${this.bucketName}`);
+
   }
 
   private getConfigValue(key: string): string {
@@ -54,8 +55,14 @@ export class S3Service {
     return getSignedUrl(this.s3Client, command, { expiresIn });
   }
 
-  getPublicUrl(key: string): string {
-    return `https://${this.bucketName}.s3.${this.s3Client.config.region}.amazonaws.com/${key}`;
+  getPublicUrl(key: string): string{
+    try {
+      const awsRegion = this.configService.get<string>('AWS_REGION');
+      return `https://${this.bucketName}.s3.${awsRegion}.amazonaws.com/${key}`;
+    } catch (error) {
+      console.error('Error generating URL:', error);
+      throw error;
+    }
   }
 
   async generatePresignedGetUrl(

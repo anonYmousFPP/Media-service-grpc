@@ -1,10 +1,21 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { S3Service } from '../aws/s3.service';
-import { GetSignedUploadUrlsRequest, GetSignedUploadUrlsResponse, DeleteMediaRequest, DeleteMediaResponse } from 'src/stubs/media';
+import { GetSignedUploadUrlsRequest, GetSignedUploadUrlsResponse, DeleteMediaRequest, DeleteMediaResponse, GetMediaResponse, GetMediaRequest } from 'src/stubs/media';
 
 @Injectable()
 export class MediaService {
   constructor(private readonly s3Service: S3Service) {}
+
+  async getMediaInternal(request: GetMediaRequest): Promise<GetMediaResponse> {
+    try {
+      const publicUrl = this.s3Service.getPublicUrl(request.fileKey);
+      return {
+        fileUrl: publicUrl
+      };
+    } catch (error) {
+      throw new NotFoundException('Error getting media URL', error.message);
+    }
+  }
 
   // Internal method for other services to use
   async getSignedUrlsInternal(request: GetSignedUploadUrlsRequest): Promise<GetSignedUploadUrlsResponse> {

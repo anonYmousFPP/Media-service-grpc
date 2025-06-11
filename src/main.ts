@@ -16,12 +16,15 @@ async function bootstrap() {
   app.connectMicroservice<MicroserviceOptions>({
     transport: Transport.GRPC,
     options: {
-      url: 'localhost:5000',
+      url: 'localhost:50053',
       package: 'media',
       protoPath: join(__dirname, '../proto/media.proto'),
     },
   });
-
+  await app.startAllMicroservices();
   await app.listen(3000);
+
+  console.log(`HTTP server running on http://localhost:3000`);
+  console.log(`gRPC server running on localhost:5000`);
 }
 bootstrap();

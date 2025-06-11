@@ -5,6 +5,15 @@ package media;
 service MediaService {
   rpc GetSignedUploadUrls (GetSignedUploadUrlsRequest) returns (GetSignedUploadUrlsResponse);
   rpc DeleteMedia (DeleteMediaRequest) returns (DeleteMediaResponse);
+  rpc GetMedia (GetMediaRequest) returns (GetMediaResponse);
+}
+
+message GetMediaRequest {
+  string file_key = 1;
+}
+
+message GetMediaResponse {
+  string file_url = 1;
 }
 
 message GetSignedUploadUrlsRequest {

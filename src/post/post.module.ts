@@ -10,6 +10,6 @@ import { MediaService } from './media.service';
   ],
   providers: [S3Service, MediaService],
   controllers: [PostController],
-  exports: [MediaService], // Export MediaService so other modules can use it
+  exports: [MediaService],
 })
 export class PostModule {}
