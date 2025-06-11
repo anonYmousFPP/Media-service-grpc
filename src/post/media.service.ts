@@ -17,24 +17,26 @@ export class MediaService {
     }
   }
 
-  // Internal method for other services to use
   async getSignedUrlsInternal(request: GetSignedUploadUrlsRequest): Promise<GetSignedUploadUrlsResponse> {
-    const urls = await Promise.all(request.files.map(async (file) => {
-      const fileKey = this.s3Service.generateMediaKey(file);
-      const uploadUrl = await this.s3Service.generatePresignedPutUrl(fileKey);
-      const publicUrl = this.s3Service.getPublicUrl(fileKey);
+    try{
+        const urls = await Promise.all(request.files.map(async (file) => {
+        const fileKey = this.s3Service.generateMediaKey(file);
+        const uploadUrl = await this.s3Service.generatePresignedPutUrl(fileKey);
+        const publicUrl = this.s3Service.getPublicUrl(fileKey);
 
-      return {
-        fileKey,
-        uploadUrl,
-        publicUrl
-      };
-    }));
+        return {
+          fileKey,
+          uploadUrl,
+          publicUrl
+        };
+      }));
 
-    return { urls };
+      return { urls };
+    } catch(error) {
+      throw new NotFoundException('Error generating upload URL', error.message);
+    }
   }
 
-  // Internal method for other services to use
   async deleteMediaInternal(request: DeleteMediaRequest): Promise<DeleteMediaResponse> {
     const deletedFiles: string[] = [];
     const failedFiles: string[] = [];
