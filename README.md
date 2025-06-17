@@ -99,3 +99,4 @@ Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
 # dummy-project-post-media-
 # Media-service-grpc
 # Media-service-grpc
+# media

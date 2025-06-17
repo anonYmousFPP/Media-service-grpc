@@ -1,15 +1,12 @@
 import { Module } from '@nestjs/common';
-import { PostController } from './post.controller';
+import { MediaController } from './media.controller';
 import { S3Service } from '../aws/s3.service';
-import { ConfigModule } from '@nestjs/config';
 import { MediaService } from './media.service';
-
+import { GrpcAuthModule } from 'src/guard/grpc-auth.module';
 @Module({
-  imports: [
-    ConfigModule.forRoot(),
-  ],
+  imports: [GrpcAuthModule],
   providers: [S3Service, MediaService],
-  controllers: [PostController],
+  controllers: [MediaController],
   exports: [MediaService],
 })
-export class PostModule {}
+export class MediaModule {}

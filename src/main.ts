@@ -1,29 +1,25 @@
-import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { join } from 'path';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  app.useGlobalPipes(new ValidationPipe({
-    whitelist: true,
-    forbidNonWhitelisted: true,
-    transform: true,
-  }));
+    const config = new DocumentBuilder()
+    .setTitle('Media API')
+    .setDescription('API for managing media uploads and retrieval')
+    .setVersion('1.0')
+    .addTag('media')
+    .build();
 
-  app.connectMicroservice<MicroserviceOptions>({
-    transport: Transport.GRPC,
-    options: {
-      url: 'localhost:50053',
-      package: 'media',
-      protoPath: join(__dirname, '../proto/media.proto'),
-    },
-  });
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, document);
+
   await app.startAllMicroservices();
+  app.enableCors();
   await app.listen(3000);
-
   console.log(`HTTP server running on http://localhost:3000`);
   console.log(`gRPC server running on localhost:5000`);
 }
